@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="comfyui-api-client",  # Unique name for your package
-    version="0.1.0",  # Follow semantic versioning (major.minor.patch)
+    version="0.1.1a",  # Follow semantic versioning (major.minor.patch)
     author="Kazancev Danil",
     author_email="your.email@example.com",
     description="A Python API client for ComfyUI to generate images through WebSocket and HTTP requests.",
