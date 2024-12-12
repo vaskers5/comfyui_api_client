@@ -3,7 +3,7 @@ import re
 import time
 import logging
 from typing import Tuple, List, Dict, Any, Optional
-from api.api_helpers import generate_image_by_prompt, load_cache_models
+from .api_helpers import generate_image_by_prompt
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -62,9 +62,7 @@ def add_loras_to_workflow(workflow: Dict, loras: List[Dict], loras_dir: str) -> 
         logger.error("No 'Power Lora Loader' node found in the workflow.")
         return workflow
 
-    lora_idxes = [
-        int(lora_key.split('_')[-1]) for lora_key in workflow[key]["inputs"] if lora_key.startswith("lora_")
-    ]
+    lora_idxes = [int(lora_key.split("_")[-1]) for lora_key in workflow[key]["inputs"] if lora_key.startswith("lora_")]
     last_lora_idx = max(lora_idxes, default=0)
 
     for lora in loras:
@@ -74,11 +72,7 @@ def add_loras_to_workflow(workflow: Dict, loras: List[Dict], loras_dir: str) -> 
             continue
 
         last_lora_idx += 1
-        workflow[key]["inputs"][f"lora_{last_lora_idx}"] = {
-            "on": True,
-            "lora": lora_path,
-            "strength": lora["weight"]
-        }
+        workflow[key]["inputs"][f"lora_{last_lora_idx}"] = {"on": True, "lora": lora_path, "strength": lora["weight"]}
         logger.info(f"Added LoRA '{lora['name']}' with strength {lora['weight']} to the workflow.")
 
     return workflow
@@ -113,7 +107,7 @@ def text2img(
     height: int = 512,
     seed: int = 42,
     batch_size: int = 1,
-    server_addr: str = "127.0.0.1:8188"
+    server_addr: str = "127.0.0.1:8188",
 ) -> Tuple[List, float, Dict]:
     """
     Generate images from text prompts using a workflow.
@@ -141,7 +135,7 @@ def text2img(
     workflow[find_workflow_key(workflow, "EmptyLatentImage")]["inputs"] = {
         "width": width,
         "height": height,
-        "batch_size": batch_size
+        "batch_size": batch_size,
     }
     workflow[find_workflow_key(workflow, "Seed (rgthree)")]["inputs"]["seed"] = seed
 

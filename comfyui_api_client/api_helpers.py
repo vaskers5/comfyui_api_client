@@ -6,17 +6,12 @@ import logging
 from typing import List, Dict, Tuple, Optional
 from websocket import WebSocket
 from PIL import Image
-from api.websocket_api import (
-    queue_prompt,
-    get_history,
-    get_image,
-    upload_image,
-    clear_comfy_cache
-)
+from api.websocket_api import queue_prompt, get_history, get_image, upload_image, clear_comfy_cache
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def open_websocket_connection(server_addr: str) -> Tuple[WebSocket, str, str]:
     """
@@ -54,10 +49,10 @@ def generate_image_by_prompt(prompt: Dict, server_addr: str, save_previews: bool
     """
     ws, _, client_id = open_websocket_connection(server_addr)
     try:
-        prompt_id = queue_prompt(prompt, client_id, server_addr)['prompt_id']
+        prompt_id = queue_prompt(prompt, client_id, server_addr)["prompt_id"]
         track_progress(prompt, ws, prompt_id)
         images_data = get_images(prompt_id, server_addr, save_previews)
-        return [Image.open(io.BytesIO(img['image_data'])) for img in images_data]
+        return [Image.open(io.BytesIO(img["image_data"])) for img in images_data]
     finally:
         ws.close()
 
@@ -72,19 +67,14 @@ def load_cache_models(workflow: Dict, server_addr: str) -> None:
     """
     ws, _, client_id = open_websocket_connection(server_addr)
     try:
-        prompt_id = queue_prompt(workflow, client_id, server_addr)['prompt_id']
+        prompt_id = queue_prompt(workflow, client_id, server_addr)["prompt_id"]
         track_progress(workflow, ws, prompt_id)
     finally:
         ws.close()
 
 
 def generate_image_by_prompt_and_image(
-    prompt: Dict,
-    server_addr: str,
-    output_path: str,
-    input_path: str,
-    filename: str,
-    save_previews: bool = False
+    prompt: Dict, server_addr: str, output_path: str, input_path: str, filename: str, save_previews: bool = False
 ) -> None:
     """
     Generate images using a prompt and an input image.
@@ -100,7 +90,7 @@ def generate_image_by_prompt_and_image(
     ws, _, client_id = open_websocket_connection(server_addr)
     try:
         upload_image(input_path, filename, server_addr, client_id)
-        prompt_id = queue_prompt(prompt, client_id, server_addr)['prompt_id']
+        prompt_id = queue_prompt(prompt, client_id, server_addr)["prompt_id"]
         track_progress(prompt, ws, prompt_id)
         images = get_images(prompt_id, server_addr, save_previews)
         save_images(images, output_path, save_previews)
@@ -118,11 +108,11 @@ def save_images(images: List[Dict], output_path: str, save_previews: bool) -> No
         save_previews (bool): Whether to save preview images.
     """
     for img in images:
-        directory = os.path.join(output_path, 'temp/') if img['type'] == 'temp' and save_previews else output_path
+        directory = os.path.join(output_path, "temp/") if img["type"] == "temp" and save_previews else output_path
         os.makedirs(directory, exist_ok=True)
         try:
-            image = Image.open(io.BytesIO(img['image_data']))
-            image.save(os.path.join(directory, img['file_name']))
+            image = Image.open(io.BytesIO(img["image_data"]))
+            image.save(os.path.join(directory, img["file_name"]))
             logger.info(f"Image saved: {os.path.join(directory, img['file_name'])}")
         except Exception as e:
             logger.error(f"Failed to save image {img['file_name']}: {e}")
@@ -149,21 +139,21 @@ def track_progress(prompt: Dict, ws: WebSocket, prompt_id: str) -> None:
 
         if isinstance(message, str):
             data = json.loads(message)
-            msg_type = data.get('type')
+            msg_type = data.get("type")
 
-            if msg_type == 'progress':
+            if msg_type == "progress":
                 logger.info(f"In K-Sampler -> Step: {data['data']['value']} of {data['data']['max']}")
-            elif msg_type == 'execution_cached':
-                for node in data['data']['nodes']:
+            elif msg_type == "execution_cached":
+                for node in data["data"]["nodes"]:
                     if node not in finished_nodes:
                         finished_nodes.add(node)
                         logger.info(f"Progress: {len(finished_nodes)}/{len(node_ids)} Tasks done")
-            elif msg_type == 'executing':
-                node = data['data']['node']
+            elif msg_type == "executing":
+                node = data["data"]["node"]
                 if node and node not in finished_nodes:
                     finished_nodes.add(node)
                     logger.info(f"Progress: {len(finished_nodes)}/{len(node_ids)} Tasks done")
-                if node is None and data['data']['prompt_id'] == prompt_id:
+                if node is None and data["data"]["prompt_id"] == prompt_id:
                     break  # Execution is done
 
 
@@ -181,19 +171,15 @@ def get_images(prompt_id: str, server_addr: str, allow_preview: bool = False) ->
     """
     output_images = []
     history = get_history(prompt_id, server_addr).get(prompt_id, {})
-    for node_id, node_output in history.get('outputs', {}).items():
-        for image in node_output.get('images', []):
+    for node_id, node_output in history.get("outputs", {}).items():
+        for image in node_output.get("images", []):
             image_data = None
-            if allow_preview and image['type'] == 'temp':
-                image_data = get_image(image['filename'], image['subfolder'], image['type'], server_addr)
-            elif image['type'] == 'output':
-                image_data = get_image(image['filename'], image['subfolder'], image['type'], server_addr)
+            if allow_preview and image["type"] == "temp":
+                image_data = get_image(image["filename"], image["subfolder"], image["type"], server_addr)
+            elif image["type"] == "output":
+                image_data = get_image(image["filename"], image["subfolder"], image["type"], server_addr)
             if image_data:
-                output_images.append({
-                    'image_data': image_data,
-                    'file_name': image['filename'],
-                    'type': image['type']
-                })
+                output_images.append({"image_data": image_data, "file_name": image["filename"], "type": image["type"]})
     return output_images
 
 

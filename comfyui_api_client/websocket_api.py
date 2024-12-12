@@ -16,7 +16,7 @@ def upload_image(
     server_address: str,
     client_id: str = "",
     image_type: str = "input",
-    overwrite: bool = False
+    overwrite: bool = False,
 ) -> Dict[str, Any]:
     """
     Upload an image to the ComfyUI server.
@@ -33,17 +33,17 @@ def upload_image(
         dict: Response from the server.
     """
     try:
-        with open(input_path, 'rb') as file:
+        with open(input_path, "rb") as file:
             multipart_data = MultipartEncoder(
                 fields={
-                    'image': (name, file, 'image/png'),
-                    'type': image_type,
-                    'overwrite': str(overwrite).lower(),
-                    'client_id': client_id
+                    "image": (name, file, "image/png"),
+                    "type": image_type,
+                    "overwrite": str(overwrite).lower(),
+                    "client_id": client_id,
                 }
             )
 
-            headers = {'Content-Type': multipart_data.content_type}
+            headers = {"Content-Type": multipart_data.content_type}
             url = f"http://{server_address}/upload/image"
             request = urllib.request.Request(url, data=multipart_data, headers=headers)
 
@@ -68,8 +68,8 @@ def queue_prompt(prompt: Dict, client_id: str, server_address: str) -> Dict:
         dict: Response from the server containing the prompt ID.
     """
     try:
-        data = json.dumps({"prompt": prompt, "client_id": client_id}).encode('utf-8')
-        headers = {'Content-Type': 'application/json'}
+        data = json.dumps({"prompt": prompt, "client_id": client_id}).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
         url = f"http://{server_address}/prompt"
 
         req = urllib.request.Request(url, data=data, headers=headers)
@@ -94,7 +94,7 @@ def interrupt_prompt(server_address: str) -> Dict:
     """
     try:
         url = f"http://{server_address}/interrupt"
-        req = urllib.request.Request(url, data={}.encode('utf-8'))
+        req = urllib.request.Request(url, data={}.encode("utf-8"))
         with urllib.request.urlopen(req) as response:
             result = json.loads(response.read())
             logger.info("Prompt interrupted successfully.")
@@ -187,11 +187,8 @@ def clear_comfy_cache(server_address: str, unload_models: bool = False, free_mem
         dict: Response from the server.
     """
     try:
-        clear_data = {
-            "unload_models": unload_models,
-            "free_memory": free_memory
-        }
-        data = json.dumps(clear_data).encode('utf-8')
+        clear_data = {"unload_models": unload_models, "free_memory": free_memory}
+        data = json.dumps(clear_data).encode("utf-8")
         url = f"http://{server_address}/free"
 
         with urllib.request.urlopen(url, data=data) as response:
