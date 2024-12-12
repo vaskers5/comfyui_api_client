@@ -1,0 +1,95 @@
+{
+  "6": {
+    "inputs": {
+      "vae_name": "sharpspectrumvaexl_v1.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "10": {
+    "inputs": {
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "Load CLIP Vision"
+    }
+  },
+  "12": {
+    "inputs": {
+      "ipadapter_file": "ip-adapter-faceid-plusv2_sdxl.bin"
+    },
+    "class_type": "IPAdapterModelLoader",
+    "_meta": {
+      "title": "IPAdapter Model Loader"
+    }
+  },
+  "13": {
+    "inputs": {
+      "provider": "CUDA",
+      "model_name": "buffalo_l"
+    },
+    "class_type": "IPAdapterInsightFaceLoader",
+    "_meta": {
+      "title": "IPAdapter InsightFace Loader"
+    }
+  },
+  "18": {
+    "inputs": {
+      "key": "ip_adapter_model",
+      "tag": "ip_adapter_model",
+      "data": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "CacheBackendData //Inspire",
+    "_meta": {
+      "title": "Cache Backend Data (Inspire)"
+    }
+  },
+  "19": {
+    "inputs": {
+      "key": "clip_vision_ip",
+      "tag": "clip_vision_ip",
+      "data": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "CacheBackendData //Inspire",
+    "_meta": {
+      "title": "Cache Backend Data (Inspire)"
+    }
+  },
+  "20": {
+    "inputs": {
+      "key": "insightface_buffalo_l",
+      "tag": "insightface_buffalo_l",
+      "data": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "CacheBackendData //Inspire",
+    "_meta": {
+      "title": "Cache Backend Data (Inspire)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "key": "sharpumvae",
+      "tag": "sharpumvae",
+      "data": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "CacheBackendData //Inspire",
+    "_meta": {
+      "title": "Cache Backend Data (Inspire)"
+    }
+  }
+}

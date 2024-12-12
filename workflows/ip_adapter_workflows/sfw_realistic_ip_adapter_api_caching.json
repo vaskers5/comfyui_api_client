@@ -1,0 +1,258 @@
+{
+    "3": {
+      "inputs": {
+        "seed": [
+          "43",
+          0
+        ],
+        "steps": 8,
+        "cfg": 1.3,
+        "sampler_name": "lcm",
+        "scheduler": "karras",
+        "denoise": 1,
+        "model": [
+          "60",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler"
+      }
+    },
+    "5": {
+      "inputs": {
+        "width": 768,
+        "height": 1008,
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image"
+      }
+    },
+    "6": {
+      "inputs": {
+        "text": [
+          "493",
+          0
+        ],
+        "speak_and_recognation": true,
+        "clip": [
+          "42",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "7": {
+      "inputs": {
+        "text": "",
+        "speak_and_recognation": true,
+        "clip": [
+          "42",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "8": {
+      "inputs": {
+        "samples": [
+          "3",
+          0
+        ],
+        "vae": [
+          "522",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "42": {
+      "inputs": {
+        "PowerLoraLoaderHeaderWidget": {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        "lora_1": {
+          "on": true,
+          "lora": "dmd2_sdxl_4step_lora.safetensors/dmd2_sdxl_4step_lora.safetensors",
+          "strength": 1
+        },
+        "➕ Add Lora": "",
+        "model": [
+          "57",
+          0
+        ],
+        "clip": [
+          "494",
+          1
+        ]
+      },
+      "class_type": "Power Lora Loader (rgthree)",
+      "_meta": {
+        "title": "Power Lora Loader (rgthree)"
+      }
+    },
+    "43": {
+      "inputs": {
+        "seed": 42
+      },
+      "class_type": "Seed (rgthree)",
+      "_meta": {
+        "title": "Seed (rgthree)"
+      }
+    },
+    "55": {
+      "inputs": {
+        "image": "photo_2024-10-25_18-44-12.jpg",
+        "upload": "image"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Image"
+      }
+    },
+    "57": {
+      "inputs": {
+        "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "strength_model": 0.7000000000000001,
+        "model": [
+          "494",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "LoraLoaderModelOnly"
+      }
+    },
+    "60": {
+      "inputs": {
+        "weight": 1,
+        "weight_faceidv2": 1,
+        "weight_type": "ease in-out",
+        "combine_embeds": "concat",
+        "start_at": 0.2,
+        "end_at": 1,
+        "embeds_scaling": "V only",
+        "model": [
+          "42",
+          0
+        ],
+        "ipadapter": [
+          "516",
+          0
+        ],
+        "image": [
+          "55",
+          0
+        ],
+        "clip_vision": [
+          "518",
+          0
+        ],
+        "insightface": [
+          "517",
+          0
+        ]
+      },
+      "class_type": "IPAdapterFaceID",
+      "_meta": {
+        "title": "IPAdapter FaceID"
+      }
+    },
+    "493": {
+      "inputs": {
+        "text": "",
+        "seed": 356,
+        "autorefresh": "No",
+        "speak_and_recognation": true
+      },
+      "class_type": "DPRandomGenerator",
+      "_meta": {
+        "title": "Random Prompts"
+      }
+    },
+    "494": {
+    "inputs": {
+        "ckpt_name": "dreamshaperXL_v21TurboDPMSDE.safetensors",
+        "key_opt": "dreamshaper",
+        "mode": "Auto"
+        },
+      "class_type": "CheckpointLoaderSimpleShared //Inspire",
+      "_meta": {
+        "title": "Shared Checkpoint Loader (Inspire)"
+      }
+    },
+    "510": {
+      "inputs": {
+        "filename_prefix": "gen",
+        "images": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    },
+    "516": {
+      "inputs": {
+        "key": "ip_adapter_model"
+      },
+      "class_type": "RetrieveBackendData //Inspire",
+      "_meta": {
+        "title": "Retrieve Backend Data (Inspire)"
+      }
+    },
+    "517": {
+      "inputs": {
+        "key": "insightface_buffalo_l"
+      },
+      "class_type": "RetrieveBackendData //Inspire",
+      "_meta": {
+        "title": "Retrieve Backend Data (Inspire)"
+      }
+    },
+    "518": {
+      "inputs": {
+        "key": "clip_vision_ip"
+      },
+      "class_type": "RetrieveBackendData //Inspire",
+      "_meta": {
+        "title": "Retrieve Backend Data (Inspire)"
+      }
+    },
+    "522": {
+      "inputs": {
+        "key": "sharpumvae"
+      },
+      "class_type": "RetrieveBackendData //Inspire",
+      "_meta": {
+        "title": "Retrieve Backend Data (Inspire)"
+      }
+    }
+  }
