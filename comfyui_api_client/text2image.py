@@ -97,6 +97,23 @@ def find_workflow_key(workflow: Dict, key: str) -> Optional[str]:
     logger.warning(f"No node with class type '{key}' found in the workflow.")
     return None
 
+def extract_prompts_ids(workflow):
+    # 'KSampler Adv. (Efficient)'
+    key = find_workflow_key(workflow, "KSampler")
+    if key is None:
+        key = find_workflow_key(workflow, 'KSampler Adv. (Efficient)')
+
+    ksampler = workflow[key]
+    print(ksampler)
+    positive_id, negative_id = ksampler["inputs"]["positive"][0], ksampler["inputs"]["negative"][0]
+    positive_data, negative_data = workflow[positive_id], workflow[negative_id]
+    if type(positive_data["inputs"]["text"]) is list:
+        print("ABOBA")
+        positive_id = positive_data["inputs"]["text"][0]
+    if type(negative_data["inputs"]["text"]) is list:
+        negative_id = negative_data["inputs"]["text"][0]
+    return positive_id, negative_id
+
 
 def text2img(
     positive_prompt: str,
@@ -130,8 +147,8 @@ def text2img(
     loras, cleaned_positive_prompt = extract_and_remove_loras(positive_prompt)
 
     # Update workflow with prompts and parameters
-    workflow[find_workflow_key(workflow, "DPRandomGenerator")]["inputs"]["text"] = cleaned_positive_prompt
-    workflow[find_workflow_key(workflow, "CLIPTextEncode")]["inputs"]["text"] = negative_prompt
+    positive_id, negative_id = extract_prompts_ids(workflow=workflow)
+    workflow[positive_id], workflow[negative_id] = cleaned_positive_prompt, negative_prompt
     workflow[find_workflow_key(workflow, "EmptyLatentImage")]["inputs"] = {
         "width": width,
         "height": height,
